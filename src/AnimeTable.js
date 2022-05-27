@@ -96,6 +96,4 @@ export default function AnimeTable(props)  {
             />
         </div>
     );
-
-
 }

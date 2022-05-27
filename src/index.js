@@ -8,63 +8,17 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { ANIME_LIST, client } from './apollo';
 import {
-  ApolloClient,
-  InMemoryCache,
   ApolloProvider,
   useQuery,
-  gql
 } from '@apollo/client';
-
-
-const ANIME_LIST = gql`
-query ($username: String, $type: MediaType) {
-  MediaListCollection(userName: $username, type: $type) {
-    lists {
-      entries {
-        status
-        score(format: POINT_10_DECIMAL)
-        progress
-        progressVolumes
-        repeat
-        startedAt {
-          year
-          month
-          day
-        }
-        completedAt {
-          year
-          month
-          day
-        }
-        media {
-          idMal
-          title {
-            romaji
-          }
-          season
-          seasonYear
-          episodes
-          chapters
-          volumes
-          siteUrl
-        }
-      }
-    }
-  }
-}
-`;
-
-const client = new ApolloClient({
-  uri: 'https://graphql.anilist.co/',
-  cache: new InMemoryCache()
-});
 
 export default function Main(props) {
   const { error, loading, data } = useQuery(ANIME_LIST, {
     variables: {
-      username: 'techie3445',
-      type: 'ANIME'
+      username: props.profile,
+      type: props.type
     }
   });
 
@@ -74,7 +28,7 @@ export default function Main(props) {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route path="/" element={<App profile={'techie3445'} />} />
         <Route path="watching" element={<AnimeTable animeTitle={'Watching'} animeList={data.MediaListCollection.lists[2].entries} />} />
         <Route path="completed-tv" element={<AnimeTable animeTitle={'Completed TV'} animeList={data.MediaListCollection.lists[0].entries} />} />
         <Route path="completed-ovas" element={<AnimeTable animeTitle={'Completed OVAs'} animeList={data.MediaListCollection.lists[6].entries} />} />
@@ -92,8 +46,6 @@ export default function Main(props) {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ApolloProvider client={client}>
-    <Main  />
+    <Main profile={'techie3445'} type={'ANIME'}/>
   </ApolloProvider>
 );
-
-

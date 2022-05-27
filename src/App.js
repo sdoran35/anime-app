@@ -1,10 +1,10 @@
 import './App.css';
 import { Link } from "react-router-dom";
 
-export default function App() {
+export default function App(props) {
   return (
     <div className='App'>
-    <h1>Anime Lists</h1>
+    <h1>{props.profile}'s Anime Lists</h1>
     <nav
       style={{
         borderBottom: "solid 1px",
